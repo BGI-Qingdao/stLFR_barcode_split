@@ -131,15 +131,15 @@ $line_num = 0;
 while(<IN_r2>)
 {
     chomp;
-    my $R1_head=$_
-    my $R2_seq=<IN_r2>
-    my $R2_3=<IN_r2>
-    my $R2_qua=<IN_r2>
+    my $R1_head=$_;
+    my $R2_seq=<IN_r2>;
+    my $R2_3=<IN_r2>;
+    my $R2_qua=<IN_r2>;
 
-    my $R1_head=<IN_r1>
-    my $R1_seq=<IN_r1>
-    my $R1_3=<IN_r1>
-    my $R1_qua=<IN_r1>
+    my $R1_head=<IN_r1>;
+    my $R1_seq=<IN_r1>;
+    my $R1_3=<IN_r1>;
+    my $R1_qua=<IN_r1>;
 
     my @heads1  = split(/\//,$R1_head);
     my $id1 = $heads1[0];
@@ -192,14 +192,14 @@ while(<IN_r2>)
         $barcode_str=$str;
     }
     print OUT_r1 $id1."\#$barcode_str\/1\t$barcode_str_2_num_hash{$barcode_str}\t1\n";
-    print OUT_r1 "$R1_seq\n"
-    print OUT_r1 "$R1_3\n"
-    print OUT_r1 "$R1_qua\n"
+    print OUT_r1 "$R1_seq\n";
+    print OUT_r1 "$R1_3\n";
+    print OUT_r1 "$R1_qua\n";
 
     print OUT_r2 $id2."\#$barcode_str\/2\t$barcode_str_2_num_hash{$barcode_str}\t1\n";
-    print OUT_r2 "$R2_true_seq\n"
-    print OUT_r2 "$R2_3\n"
-    print OUT_r2 "$R2_true_qua\n"
+    print OUT_r2 "$R2_true_seq\n";
+    print OUT_r2 "$R2_3\n";
+    print OUT_r2 "$R2_true_qua\n";
 }
 close IN_r1 ;
 close OUT_r1 ;
