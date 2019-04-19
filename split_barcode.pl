@@ -131,15 +131,15 @@ $line_num = 0;
 while(<IN_r2>)
 {
     chomp;
-    $R1_head=$_
-    $R2_seq=<IN_r2>
-    $R2_3=<IN_r2>
-    $R2_qua=<IN_r2>
+    my $R1_head=$_
+    my $R2_seq=<IN_r2>
+    my $R2_3=<IN_r2>
+    my $R2_qua=<IN_r2>
 
-    $R1_head=<IN_r1>
-    $R1_seq=<IN_r1>
-    $R1_3=<IN_r1>
-    $R1_qua=<IN_r1>
+    my $R1_head=<IN_r1>
+    my $R1_seq=<IN_r1>
+    my $R1_3=<IN_r1>
+    my $R1_qua=<IN_r1>
 
     my @heads1  = split(/\//,$R1_head);
     my $id1 = $heads1[0];
