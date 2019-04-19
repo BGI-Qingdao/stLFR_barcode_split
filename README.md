@@ -23,7 +23,7 @@ This is an basic utils used by all kinds of stLFR projects to do barcode splitin
 ./split_barcode.sh your_raw_read1.fq.gz your_raw_read2.fq.gz
 ```
 
-## <a name=example>Format exampls</a>
+## <a name=example>Format examples</a>
 
 ### <a name=stlfr_raw> stLFR raw reads</a>
 
