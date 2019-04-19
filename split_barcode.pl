@@ -131,7 +131,7 @@ $line_num = 0;
 while(<IN_r2>)
 {
     chomp;
-    my $R1_head=$_;
+    my $R2_head=$_;
     my $R2_seq=<IN_r2>;
     my $R2_3=<IN_r2>;
     my $R2_qua=<IN_r2>;
