@@ -7,15 +7,21 @@ This is an basic utils used by all kinds of stLFR projects to do barcode splitin
 - [Introduction](#intro)
 - [Table of Contents](#contents)
 - [User's Guide](#user-guide)
+    - [Quick start](#quick-start)
     - [Format examples](#examples)
         - [stLFR raw reads](#stlfr_raw)
         - [stLFR reads](#stlfr)
-    - [Quick start](#quick-start)
-    - [General usage](#usage)
 - [Miscellaneous](#msic)
 
 
 # <a name=user-guide>User's Guide</a>
+
+## <a name=quick-start>Quick start</a>
+
+```
+# Run below command will generate split_read.1.fq.gz and split_read.2.fq.gz
+./split_barcode.sh your_raw_read1.fq.gz your_raw_read2.fq.gz
+```
 
 ## <a name=example>Format exampls</a>
 
@@ -100,9 +106,15 @@ AGTCAACGCACATCCTCTTGGTTTTGTCTTTCTTCTCCACAAAGATAACCGGAGCACCCCAAGGCGACGTGCTCGGACGG
 EFD8DBFFEFFFFEFFFFFFFFDCDFEFEFFFFFFFFFFFCEFFEEFFFFFFDFFFFFEFFEFFFFDFFDFFFFFF>EFFD>F<6FFFD'FF9FA;,D+9
 ```
 
-## <a name=quick-start>Quick start</a>
-
-## <a name=usage>General usage</a>
-
 # <a name=misc>Miscellaneous</a>
+
+- Dependence
+    - perl
+- Resources
+    - cpu 
+        - mult-thread is not supported
+    - memory
+        - depends on your input
+    - time 
+        - days maybe
 

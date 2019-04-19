@@ -9,7 +9,6 @@ fi
 
 raw_read1=$1
 raw_read2=$2
-output_dir=$3
 
 if [[ ! -f $raw_read1 || ! -f $raw_read2 ]] ; then 
     echo "Error : input raw reads not exist !!! exit ..."
