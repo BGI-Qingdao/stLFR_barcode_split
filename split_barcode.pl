@@ -192,13 +192,13 @@ while(<IN_r2>)
         $barcode_str=$str;
     }
     print OUT_r1 $id1."\#$barcode_str\/1\t$barcode_str_2_num_hash{$barcode_str}\t1\n";
-    print OUT_r1 "$R1_seq\n";
-    print OUT_r1 "$R1_3\n";
-    print OUT_r1 "$R1_qua\n";
+    print OUT_r1 "$R1_seq";
+    print OUT_r1 "$R1_3";
+    print OUT_r1 "$R1_qua";
 
     print OUT_r2 $id2."\#$barcode_str\/2\t$barcode_str_2_num_hash{$barcode_str}\t1\n";
     print OUT_r2 "$R2_true_seq\n";
-    print OUT_r2 "$R2_3\n";
+    print OUT_r2 "$R2_3";
     print OUT_r2 "$R2_true_qua\n";
 }
 close IN_r1 ;
