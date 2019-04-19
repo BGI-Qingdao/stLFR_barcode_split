@@ -103,13 +103,11 @@ $|=1;
 
 
 #   Step 3
-#       1. make line_num --> barcode_string map.
 #       2. make barcode_string --> barcode_num map.
 #       3. make barcode_num --> barcode_string map.
 #       4. calculate barcode_num frequence .
 #       5. print stats.
 
-my %line_num_2_barcode_str_hash;
 my %barcode_str_2_num_hash;
 my %barcode_num_2_str_hash;
 my %barcode_freq_hash;
@@ -122,59 +120,92 @@ my $split_reads_num = 0 ;
 my $split_barcode_num = 0;
 my $progress = 0 ;
 
-print "step 3 : parse barcodes from read2 .... \n";
+print "step 3 : parse barcodes .... \n";
 $|=1;
-open IN3,"gzip -dc $ARGV[2] |" or die "cannot open file";
+
+open IN_r1,"gzip -dc $ARGV[1] |" or die "cannot open $ARGV[1] for read \n";
+open OUT_r1, "| gzip > $ARGV[3].1.fq.gz" or die "Can't open $ARGV[3].1.fq.gz for write";
+open IN_r2,"gzip -dc $ARGV[2] |" or die "cannot open $ARGV[2] for read \n";
+open OUT_r2, "| gzip > $ARGV[3].2.fq.gz" or die "Can't open $ARGV[3].2.fq.gz for write \n";
 $line_num = 0;
-while(<IN3>)
+while(<IN_r2>)
 {
     chomp;
-    @line = split;
-    $line_num ++;
-    # print process ...
-    if($line_num % 4 == 1)
+    $R1_head=$_
+    $R2_seq=<IN_r2>
+    $R2_3=<IN_r2>
+    $R2_qua=<IN_r2>
+
+    $R1_head=<IN_r1>
+    $R1_seq=<IN_r1>
+    $R1_3=<IN_r1>
+    $R1_qua=<IN_r1>
+
+    my @heads1  = split(/\//,$R1_head);
+    my $id1 = $heads1[0];
+    my $flag1=$heads1[1];
+    my @heads2  = split(/\//,$R2_head);
+    my $id2 = $heads2[0];
+    my $flag2=$heads2[1];
+
+    if( $id1 ne $id2 )
     {
-        $reads_num ++;
-        if($line_num % 4000000 == 1)
-        {
-            print "parse barcodes processed $progress (M) reads ...\n";
-            $|=1;
-            $progress ++ ;
-        }
+        die "head not match error !!! $id1 != $id2";
+    }
+    if( $flag1 != 1 || $flag2 != 2 )
+    {
+        die "head not match error !!! $R1_head != $R2_head";
+    }
+
+    $reads_num ++;
+    $line_num = $line_num + 4 ;
+    # print process ...
+    if($line_num % 4000000 == 1)
+    {
+        print "parse barcodes processed $progress (M) reads ...\n";
+        $|=1;
+        $progress ++ ;
     }
 
     # check barcodes 
-    if($line_num % 4 == 2)
+    my $b1 = substr($R2_seq, $valid_read_len, $n1);
+    my $b2 = substr($R2_seq, $valid_read_len+$n1+$n2, $n3);
+    my $b3 = substr($R2_seq, $valid_read_len+$n1+$n2+$n3+$n4, $n5);
+    my $R2_true_seq=substr($R2_seq,0,$valid_read_len);
+    my $R2_true_qua=substr($R2_qua,0,$valid_read_len);
+    my $barcode_str="0_0_0";
+    if((exists $barcode_hash{$b1}) && (exists $barcode_hash{$b2}) && ($n5 != 0 && (exists $barcode_hash{$b3})) )
     {
-        my $b1 = substr($line[0], $valid_read_len, $n1);
-        my $b2 = substr($line[0], $valid_read_len+$n1+$n2, $n3);
-        my $b3 = substr($line[0], $valid_read_len+$n1+$n2+$n3+$n4, $n5);
-        if((exists $barcode_hash{$b1}) && (exists $barcode_hash{$b2}) && ($n5 != 0 && (exists $barcode_hash{$b3})) )
+        my $str = $barcode_hash{$b1}."_".$barcode_hash{$b2};
+        if( $n5 != 0 )
         {
-            my $str = $barcode_hash{$b1}."_".$barcode_hash{$b2};
-            if( $n5 != 0 )
-            {
-                $str = $str."_".$barcode_hash{$b3};
-            }
-            if(!(exists $barcode_str_2_num_hash{$str})) {
-                $split_barcode_num ++;
-                $barcode_str_2_num_hash{$str} = $split_barcode_num;
-                $barcode_num_2_str_hash{$split_barcode_num} = $str;
-                $barcode_freq_hash{$str} = 0;
-            }
-            $split_reads_num ++;
-            $barcode_freq_hash{$str} ++;
-            my $head_num = $line_num -1 ;
-            $line_num_2_barcode_str_hash{$head_num} = $str ;
+            $str = $str."_".$barcode_hash{$b3};
         }
-        else
-        {
-            my $head_num = $line_num -1 ;
-            $line_num_2_barcode_str_hash{$head_num} = "0_0_0";
+        if(!(exists $barcode_str_2_num_hash{$str})) {
+            $split_barcode_num ++;
+            $barcode_str_2_num_hash{$str} = $split_barcode_num;
+            $barcode_num_2_str_hash{$split_barcode_num} = $str;
+            $barcode_freq_hash{$str} = 0;
         }
+        $split_reads_num ++;
+        $barcode_freq_hash{$str} ++;
+        $barcode_str=$str;
     }
+    print OUT_r1 $id1."\#$barcode_str\/1\t$barcode_str_2_num_hash{$barcode_str}\t1\n";
+    print OUT_r1 "$R1_seq\n"
+    print OUT_r1 "$R1_3\n"
+    print OUT_r1 "$R1_qua\n"
+
+    print OUT_r2 $id2."\#$barcode_str\/2\t$barcode_str_2_num_hash{$barcode_str}\t1\n";
+    print OUT_r2 "$R2_true_seq\n"
+    print OUT_r2 "$R2_3\n"
+    print OUT_r2 "$R2_true_qua\n"
 }
-close IN3;
+close IN_r1 ;
+close OUT_r1 ;
+close IN_r2 ;
+close OUT_r2 ;
+
 # print stat
 my $r1 = 0 ;
 my $r2 = 0 ;
@@ -196,86 +227,6 @@ for(my $i=1;$i<=$split_barcode_num;$i++){
     print OUT1 "$str\t$barcode_freq_hash{$str}\t$i\n";
 }
 close OUT1;
-
-#
-# Step 4 . parse r1 line by line .
-#
-print "step 4 : parse read 1 ...\n";
-$|=1;
-open IN_r1,"gzip -dc $ARGV[1] |" or die "cannot open $ARGV[1] for read \n";
-open OUT_r1, "| gzip > $ARGV[3].1.fq.gz" or die "Can't open $ARGV[3].1.fq.gz for write";
-
-$line_num = 0 ;
-$progress = 0 ;
-while(<IN_r1>)
-{
-    chomp;
-    $line_num ++ ;
-    # print process ...
-    my @line = split;
-    if( $line_num % 4 == 1 )
-    {
-        my @A  = split(/\//,$line[0]);
-        my $id = $A[0];
-        my $str = $line_num_2_barcode_str_hash{$line_num} ; 
-        print OUT_r1 $id."\#$str\/1\t$barcode_str_2_num_hash{$str}\t1\n";
-        if($line_num% 4000000 == 1)
-        {
-            print "parse read 1 processed $progress (M) reads ...\n";
-            $|=1;
-            $progress ++ ;
-        }
-    }
-    else
-    {
-        print OUT_r1 "$line[0]\n";
-    }
-}
-close IN_r1 ;
-close OUT_r1 ;
-#
-# Step 5 . parse r5 line by line .
-#
-
-print "step 5 : parse read 2 ...\n";
-open IN_r2,"gzip -dc $ARGV[2] |" or die "cannot open $ARGV[2] for read \n";
-open OUT_r2, "| gzip > $ARGV[3].2.fq.gz" or die "Can't open $ARGV[3].2.fq.gz for write \n";
-$line_num = 0 ;
-$progress= 0 ;
-while(<IN_r2>)
-{
-    chomp;
-    $line_num ++ ;
-    my @line = split;
-    if( $line_num % 4 == 1 )
-    {
-        my @A  = split(/\//,$line[0]);
-        my $id = $A[0];
-        my $str = $line_num_2_barcode_str_hash{$line_num} ; 
-        print OUT_r2  $id."\#$str\/2\t$barcode_str_2_num_hash{$str}\t1\n";
-        if($line_num % 4000000 == 1)
-        {
-            print "parse read 2 processed $progress (M) reads ...\n";
-            $|=1;
-            $progress ++ ;
-        }
-    }
-    else
-    {
-        if ( $line_num % 4 != 3 )
-        {
-            my $read = substr($line[0], 0 , $valid_read_len);
-            print OUT_r2 "$read\n";
-        }
-        else
-        {
-            print OUT_r2 "$line[0]\n"
-        }
-    }
-
-}
-close IN_r2 ;
-close OUT_r2 ;
 
 print "all done!\n";
 $|=1;
