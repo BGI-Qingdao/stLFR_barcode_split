@@ -18,10 +18,18 @@ This is an basic utils used by all kinds of stLFR projects to do barcode splitin
 
 ## <a name=quick-start>Quick start</a>
 
+- Usage
 ```
 # Run below command will generate split_read.1.fq.gz and split_read.2.fq.gz
 ./split_barcode.sh your_raw_read1.fq.gz your_raw_read2.fq.gz
 ```
+- Test example
+
+```
+cd test_data
+./test.sh
+```
+
 
 ## <a name=example>Format examples</a>
 
