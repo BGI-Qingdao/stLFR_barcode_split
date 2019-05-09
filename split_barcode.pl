@@ -51,7 +51,7 @@ my $flag = 0;
 my $progress = 0 ;
 my %new_barcode;
 my %new_barcode_freq;
-my ($r2_length,$line_num,$total_reads_num,$valid_barcode_num); 
+my ($r2_length,$line_num,$total_reads_num,$valid_barcode_num,$valid_barcode_type); 
 my ($r1_1,$r1_2,$r1_3,$r1_4);
 my ($r2_1,$r2_2,$r2_3,$r2_4);
 while(<IN2>){
@@ -121,9 +121,9 @@ while(<IN2>){
     if(exists $new_barcode{$str}){
         $new_barcode_freq{$str}++;
     }else{
-        $new_barcode{$str}=$flag;
+        $valid_barcode_type++;
+        $new_barcode{$str}=$valid_barcode_type;
         $new_barcode_freq{$str}=1;
-        $flag++;
     }
     print OUT1 "$r1_id#$str\/1\t$new_barcode{$str}\t1\n";
     print OUT1 "$r1_2\n$r1_3\n$r1_4\n";
@@ -138,11 +138,11 @@ print "Step 3 : Done\n";
 print "Step 4 : Generate barcode_freq.txt and stat log ...\n";
 my $stat1 = 0 ;
 my $stat2 = 0 ;
-$stat1 = 100 * $valid_barcode_num/$total_barcode_types;
+$stat1 = 100 * $valid_barcode_type/$total_barcode_types;
 $stat2 = 100 * $valid_barcode_num/$total_reads_num;
 open LOG, ">split_read_stat.log" or die "Can't open split_stat_read.log for write\n";
 print LOG "Total_Barcode_num = $index X $index X $index = $total_barcode_types\n";
-print LOG "Valid_Barcode_num = $valid_barcode_num ($stat1% of all barcode types)\n";
+print LOG "Valid_Barcode_num = $valid_barcode_type ($stat1% of all barcode types)\n";
 print LOG "Total_reads_pair_num = $total_reads_num \n";
 print LOG "Valid_reads_pair_num = $valid_barcode_num ($stat2 % of raw reads)\n";
 print LOG "read2_length = $r2_length \n";
