@@ -152,7 +152,7 @@ close LOG;
 open FREQ,">barcode_freq.txt" or die "Can't open barcode_freq.txt!\n";
 print FREQ "Barcode_seq\tBarcode_count\tBarcode_num\n";
 foreach my $key(sort keys%new_barcode){
-    next if ($key eq "0_0_0");
+    next if ($key =~ /0_0/);
     print FREQ "$key\t$new_barcode_freq{$key}\t$new_barcode{$key}\n";
 }
 close FREQ;
