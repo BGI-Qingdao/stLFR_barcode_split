@@ -115,7 +115,7 @@ while(<IN2>){
             $str = $all_barcode{$b1}."_".$all_barcode{$b2};
             $valid_barcode_num++;
         }else{
-            $str = "0_0";
+            $str = "0_0_0";
         }
     }
     if(exists $new_barcode{$str}){
