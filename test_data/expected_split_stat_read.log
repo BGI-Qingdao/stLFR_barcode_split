@@ -1,6 +1,6 @@
-Barcode_types = 1536 * 1536 * 1536 = 3623878656
-Real_Barcode_types = 9163 (0.000252850629665233 %)
-Reads_pair_num  = 10000 
-Reads_pair_num(after split) = 9176 (91.76 %)
-read2_read_len : 142 
-barcode type : 100-10-6-10-6-10 
+Total_Barcode_num = 1536 X 1536 X 1536 = 3623878656
+Valid_Barcode_num = 9163 (0.000252850629665233% of all barcode types)
+Total_reads_pair_num = 10000 
+Valid_reads_pair_num = 9176 (91.76 % of raw reads)
+read2_length = 142 
+True_read_type : 100-10-6-10-6-10 

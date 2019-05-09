@@ -19,7 +19,7 @@ gzip -dc split_reads.2.fq.gz >split_reads.2.fq
 diff expected_split_reads.1.fq split_reads.1.fq >diff_cache
 diff expected_split_reads.2.fq split_reads.2.fq >>diff_cache
 diff barcode_freq.txt expected_barcode_freq.txt >>diff_cache
-diff split_stat_read.log expected_split_stat_read.log >>diff_cache
+diff split_read_stat.log expected_split_stat_read.log >>diff_cache
 ###
 # check difffiles
 ###
