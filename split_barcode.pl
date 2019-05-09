@@ -78,7 +78,6 @@ while(<IN2>){
         print "Step 2 : Done\n";
 #Step 3 : Parse barcodes         
         print "Step 3 : Parse barcodes ...\n";
-        print "True_barcode_type : $n1-$n2-$n3-$n4-$n5 \n";
     }
 
     my ($r1_id,$r2_id);
@@ -101,18 +100,22 @@ while(<IN2>){
     my $r2_true_qua=substr($r2_4,0,$valid_read_len);
     my $str;
     if($n5!=0){
+        $new_barcode{"0_0_0"}=0;
+        $new_barcode_freq{"0_0_0"}=0;
         if(exists$all_barcode{$b1} && exists$all_barcode{$b2} && exists$all_barcode{$b3}){
             $str = $all_barcode{$b1}."_".$all_barcode{$b2}."_".$all_barcode{$b3};
             $valid_barcode_num++;
         }else{
-            next;
+            $str = "0_0_0";
         }
     }else{
+        $new_barcode{"0_0"}=0;
+        $new_barcode_freq{"0_0"}=0;
         if(exists$all_barcode{$b1} && exists$all_barcode{$b2}){
             $str = $all_barcode{$b1}."_".$all_barcode{$b2};
             $valid_barcode_num++;
         }else{
-            next;
+            $str = "0_0";
         }
     }
     if(exists $new_barcode{$str}){
@@ -149,6 +152,7 @@ close LOG;
 open FREQ,">barcode_freq.txt" or die "Can't open barcode_freq.txt!\n";
 print FREQ "Barcode_seq\tBarcode_count\tBarcode_num\n";
 foreach my $key(sort keys%new_barcode){
+    next if ($key =~ /0_0/);
     print FREQ "$key\t$new_barcode_freq{$key}\t$new_barcode{$key}\n";
 }
 close FREQ;
