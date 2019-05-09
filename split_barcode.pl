@@ -1,8 +1,8 @@
 #!/usr/bin/perl -w
 use strict;
-if(@ARGV != 3){
+if(@ARGV != 4){
     print "\n";
-    print "Example: perl $0.pl barcode.list r1.fq.gz r2.fq.gz \n";
+    print "Example: perl $0.pl barcode.list r1.fq.gz r2.fq.gz out_prefix \n";
     print "\n";
     exit(1);
 }
@@ -36,14 +36,14 @@ if($ARGV[1]=~/\.gz/){
 }else{
     open IN1,"$ARGV[1]" or die "Can't open r1 file";
 }
-open OUT1,"| gzip > $ARGV[1].split.fq.gz" or die "Can't open $ARGV[1].split.fq.gz\n";
+open OUT1,"| gzip > $ARGV[3].1.fq.gz" or die "Can't open $ARGV[1].split.fq.gz\n";
 
 if($ARGV[2]=~/\.gz/){
     open IN2,"gzip -dc $ARGV[2] |" or die "Can't open r2 file";
 }else{
     open IN2,"$ARGV[2]" or die "Can't open r2 file";
 }
-open OUT2,"| gzip > $ARGV[2].split.fq.gz" or die "Can't open $ARGV[2].split.fq.gz\n";
+open OUT2,"| gzip > $ARGV[3].2.fq.gz" or die "Can't open $ARGV[2].split.fq.gz\n";
 
 my ($n1,$n2,$n3,$n4,$n5)=(10,6,10,0,10);
 my $valid_read_len = 100;
@@ -78,6 +78,7 @@ while(<IN2>){
         print "Step 2 : Done\n";
 #Step 3 : Parse barcodes         
         print "Step 3 : Parse barcodes ...\n";
+        print "True_barcode_type : $n1-$n2-$n3-$n4-$n5 \n";
     }
 
     my ($r1_id,$r2_id);
@@ -100,22 +101,18 @@ while(<IN2>){
     my $r2_true_qua=substr($r2_4,0,$valid_read_len);
     my $str;
     if($n5!=0){
-        $new_barcode{"0_0_0"}=0;
-        $new_barcode_freq{"0_0_0"}=0;
         if(exists$all_barcode{$b1} && exists$all_barcode{$b2} && exists$all_barcode{$b3}){
             $str = $all_barcode{$b1}."_".$all_barcode{$b2}."_".$all_barcode{$b3};
             $valid_barcode_num++;
         }else{
-            $str = "0_0_0";
+            next;
         }
     }else{
-        $new_barcode{"0_0"}=0;
-        $new_barcode_freq{"0_0"}=0;
         if(exists$all_barcode{$b1} && exists$all_barcode{$b2}){
             $str = $all_barcode{$b1}."_".$all_barcode{$b2};
             $valid_barcode_num++;
         }else{
-            $str = "0_0";
+            next;
         }
     }
     if(exists $new_barcode{$str}){
@@ -151,10 +148,8 @@ close LOG;
 # barcode details 
 open FREQ,">barcode_freq.txt" or die "Can't open barcode_freq.txt!\n";
 print FREQ "Barcode_seq\tBarcode_count\tBarcode_num\n";
-$flag=1;
 foreach my $key(sort keys%new_barcode){
-    print FREQ "$key\t$new_barcode_freq{$key}\t$flag\n";
-    $flag++;
+    print FREQ "$key\t$new_barcode_freq{$key}\t$new_barcode{$key}\n";
 }
 close FREQ;
 print "Step 4 : Done \n";
