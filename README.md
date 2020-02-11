@@ -58,7 +58,7 @@ FFFFFFFFFFFFFFEF>FFFFFFFFFFEFFFFFFFFFFFFFFEFFFFFCEF>FF>GCAFBFFFFFF;7FEFFCFE9FAFF
 
 *The last 42bp sequence is the stLFR barcode information at read 2*
 
-*As far as I know, there are 3 type of r2 : 126bp or 142bp or 154bp. If your r2 is not one of this 3 type, error will happend!*
+*As far as I know, there are 4 type of r2 : 126bp or 130bp or 142bp or 154bp. If your r2 is not one of these 4 type, error will happend!*
 
 ```
 @CL100117953L1C001R001_1/2

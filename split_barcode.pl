@@ -67,6 +67,9 @@ while(<IN2>){
             $n4 = 18 ;
         }elsif( $r2_length == 142 ){
             $n4 = 6 ;
+        }elsif( $r2_length == 130 ){
+            $n2 = 0 ;
+            $n4 = 0 ;
         }elsif( $r2_length == 126 ){
             $n4 = 0 ;
             $n5 = 0 ;
