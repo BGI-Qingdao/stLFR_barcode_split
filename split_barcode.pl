@@ -70,6 +70,9 @@ while(<IN2>){
         }elsif( $r2_length == 126 ){
             $n4 = 0 ;
             $n5 = 0 ;
+        }elsif( $r2_length == 130 ){
+            $n2 = 0 ;
+            $n4 = 0 ;
         }else{
             print "Unknow read length of r2:$r2_length.\nPlease check the $ARGV[2] file!\n";
             exit(1);
