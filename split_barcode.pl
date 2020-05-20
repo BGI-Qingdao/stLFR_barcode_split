@@ -54,6 +54,7 @@ my %new_barcode_freq;
 my ($r2_length,$line_num,$total_reads_num,$valid_barcode_num,$valid_barcode_type); 
 my ($r1_1,$r1_2,$r1_3,$r1_4);
 my ($r2_1,$r2_2,$r2_3,$r2_4);
+my $pooling_name; # add pooling name(species) on the read name
 while(<IN2>){
     chomp($r1_1=<IN1>); chomp($r1_2=<IN1>); 
     chomp($r1_3=<IN1>); chomp($r1_4=<IN1>);
@@ -67,6 +68,9 @@ while(<IN2>){
             $n4 = 18 ;
         }elsif( $r2_length == 142 ){
             $n4 = 6 ;
+	}elsif( $r2_length == 152 ){
+	    $n4 = 6 ;
+	    our $valid_read_len = 110;
         }elsif( $r2_length == 130 ){
             $n2 = 0 ;
             $n4 = 0 ;
@@ -95,12 +99,12 @@ while(<IN2>){
         $|=1;
         $progress ++ ;
     }
-# check barcodes 
+# check barcodes
     my $b1 = substr($r2_2, $valid_read_len, $n1);
     my $b2 = substr($r2_2, $valid_read_len+$n1+$n2, $n3);
     my $b3 = substr($r2_2, $valid_read_len+$n1+$n2+$n3+$n4, $n5) if ($n5 !=0);
-    my $r2_true_seq=substr($r2_2,0,$valid_read_len);
-    my $r2_true_qua=substr($r2_4,0,$valid_read_len);
+    my $r2_true_seq=substr($r2_2,0,100);
+    my $r2_true_qua=substr($r2_4,0,100);
     my $str;
     if($n5!=0){
         $new_barcode{"0_0_0"}=0;
@@ -128,10 +132,18 @@ while(<IN2>){
         $new_barcode{$str}=$valid_barcode_type;
         $new_barcode_freq{$str}=1;
     }
-    print OUT1 "$r1_id#$str\/1\t$new_barcode{$str}\t1\n";
-    print OUT1 "$r1_2\n$r1_3\n$r1_4\n";
-    print OUT2 "$r2_id#$str\/2\t$new_barcode{$str}\t1\n";
-    print OUT2 "$r2_true_seq\n$r2_3\n$r2_true_qua\n";
+    if($r2_length == 152){
+	$pooling_name = substr($r2_2, 100, 10);
+    	print OUT1 "$r1_id#$str\/1\t$new_barcode{$str}\t1\t$pooling_name\n";
+    	print OUT1 "$r1_2\n$r1_3\n$r1_4\n";
+    	print OUT2 "$r2_id#$str\/2\t$new_barcode{$str}\t1\t$pooling_name\n";
+    	print OUT2 "$r2_true_seq\n$r2_3\n$r2_true_qua\n";
+    }else{
+    	print OUT1 "$r1_id#$str\/1\t$new_barcode{$str}\t1\n";
+    	print OUT1 "$r1_2\n$r1_3\n$r1_4\n";
+    	print OUT2 "$r2_id#$str\/2\t$new_barcode{$str}\t1\n";
+   	print OUT2 "$r2_true_seq\n$r2_3\n$r2_true_qua\n";
+   }
 }
 close IN1; close OUT1;
 close IN2; close OUT2;
