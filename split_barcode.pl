@@ -161,7 +161,11 @@ print LOG "Valid_Barcode_num = $valid_barcode_type ($stat1% of all barcode types
 print LOG "Total_reads_pair_num = $total_reads_num \n";
 print LOG "Valid_reads_pair_num = $valid_barcode_num ($stat2 % of raw reads)\n";
 print LOG "read2_length = $r2_length \n";
-print LOG "True_read_type : $valid_read_len-$n1-$n2-$n3-$n4-$n5 \n";
+if($valid_read_len == 100){
+    print LOG "True_read_type : $valid_read_len-$n1-$n2-$n3-$n4-$n5 \n";
+} else if ($valid_read_len == 110) { 
+    print LOG "True_read_type : 100-10-$n1-$n2-$n3-$n4-$n5 \n";
+}
 close LOG;
 # barcode details 
 open FREQ,">barcode_freq.txt" or die "Can't open barcode_freq.txt!\n";
