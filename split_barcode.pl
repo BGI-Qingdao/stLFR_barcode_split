@@ -70,7 +70,7 @@ while(<IN2>){
             $n4 = 6 ;
 	}elsif( $r2_length == 152 ){
 	    $n4 = 6 ;
-	    our $valid_read_len = 110;
+	    $valid_read_len = 110;
         }elsif( $r2_length == 130 ){
             $n2 = 0 ;
             $n4 = 0 ;
