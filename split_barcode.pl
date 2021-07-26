@@ -68,12 +68,16 @@ while(<IN2>){
             $n4 = 18 ;
         }elsif( $r2_length == 142 ){
             $n4 = 6 ;
-	}elsif( $r2_length == 152 ){
-	    $n4 = 6 ;
-	    $valid_read_len = 110;
+    }elsif( $r2_length == 152 ){
+        $n4 = 6 ;
+        $valid_read_len = 110;
         }elsif( $r2_length == 130 ){
             $n2 = 0 ;
             $n4 = 0 ;
+        }elsif( $r2_length == 180 ){
+            $n2 = 0 ;
+            $n4 = 0 ;
+            $valid_read_len = 150;
         }elsif( $r2_length == 126 ){
             $n4 = 0 ;
             $n5 = 0 ;
@@ -103,8 +107,13 @@ while(<IN2>){
     my $b1 = substr($r2_2, $valid_read_len, $n1);
     my $b2 = substr($r2_2, $valid_read_len+$n1+$n2, $n3);
     my $b3 = substr($r2_2, $valid_read_len+$n1+$n2+$n3+$n4, $n5) if ($n5 !=0);
-    my $r2_true_seq=substr($r2_2,0,100);
-    my $r2_true_qua=substr($r2_4,0,100);
+    if (  $r2_length < 180 ) {
+        my $r2_true_seq=substr($r2_2,0,100);
+        my $r2_true_qua=substr($r2_4,0,100);
+    } else {
+        my $r2_true_seq=$r2_2;
+        my $r2_true_qua=$r2_4;
+    }
     my $str;
     if($n5!=0){
         $new_barcode{"0_0_0"}=0;
@@ -133,16 +142,16 @@ while(<IN2>){
         $new_barcode_freq{$str}=1;
     }
     if($r2_length == 152){
-	$pooling_name = substr($r2_2, 100, 10);
-    	print OUT1 "$r1_id#$str\/1\t$new_barcode{$str}\t1\t$pooling_name\n";
-    	print OUT1 "$r1_2\n$r1_3\n$r1_4\n";
-    	print OUT2 "$r2_id#$str\/2\t$new_barcode{$str}\t1\t$pooling_name\n";
-    	print OUT2 "$r2_true_seq\n$r2_3\n$r2_true_qua\n";
+        $pooling_name = substr($r2_2, 100, 10);
+        print OUT1 "$r1_id#$str\/1\t$new_barcode{$str}\t1\t$pooling_name\n";
+        print OUT1 "$r1_2\n$r1_3\n$r1_4\n";
+        print OUT2 "$r2_id#$str\/2\t$new_barcode{$str}\t1\t$pooling_name\n";
+        print OUT2 "$r2_true_seq\n$r2_3\n$r2_true_qua\n";
     }else{
-    	print OUT1 "$r1_id#$str\/1\t$new_barcode{$str}\t1\n";
-    	print OUT1 "$r1_2\n$r1_3\n$r1_4\n";
-    	print OUT2 "$r2_id#$str\/2\t$new_barcode{$str}\t1\n";
-   	print OUT2 "$r2_true_seq\n$r2_3\n$r2_true_qua\n";
+        print OUT1 "$r1_id#$str\/1\t$new_barcode{$str}\t1\n";
+        print OUT1 "$r1_2\n$r1_3\n$r1_4\n";
+        print OUT2 "$r2_id#$str\/2\t$new_barcode{$str}\t1\n";
+        print OUT2 "$r2_true_seq\n$r2_3\n$r2_true_qua\n";
    }
 }
 close IN1; close OUT1;
@@ -165,6 +174,8 @@ if($valid_read_len == 100){
     print LOG "True_read_type : $valid_read_len-$n1-$n2-$n3-$n4-$n5 \n";
 } elsif ($valid_read_len == 110) { 
     print LOG "True_read_type : 100-10-$n1-$n2-$n3-$n4-$n5 \n";
+} elsif ($valid_read_len == 150) {
+    print LOG "True_read_type : $valid_read_len-$n1-$n2-$n3-$n4-$n5 \n";
 }
 close LOG;
 # barcode details 
