@@ -107,12 +107,14 @@ while(<IN2>){
     my $b1 = substr($r2_2, $valid_read_len, $n1);
     my $b2 = substr($r2_2, $valid_read_len+$n1+$n2, $n3);
     my $b3 = substr($r2_2, $valid_read_len+$n1+$n2+$n3+$n4, $n5) if ($n5 !=0);
+    my $r2_true_seq="";
+    my $r2_true_qua="";
     if (  $r2_length < 180 ) {
-        my $r2_true_seq=substr($r2_2,0,100);
-        my $r2_true_qua=substr($r2_4,0,100);
+        $r2_true_seq=substr($r2_2,0,100);
+        $r2_true_qua=substr($r2_4,0,100);
     } else {
-        my $r2_true_seq=$r2_2;
-        my $r2_true_qua=$r2_4;
+        $r2_true_seq=$r2_2;
+        $r2_true_qua=$r2_4;
     }
     my $str;
     if($n5!=0){
