@@ -109,13 +109,15 @@ while(<IN2>){
     my $b3 = substr($r2_2, $valid_read_len+$n1+$n2+$n3+$n4, $n5) if ($n5 !=0);
     my $r2_true_seq="";
     my $r2_true_qua="";
-    if (  $r2_length < 180 ) {
-        $r2_true_seq=substr($r2_2,0,100);
-        $r2_true_qua=substr($r2_4,0,100);
-    } else {
-        $r2_true_seq=$r2_2;
-        $r2_true_qua=$r2_4;
-    }
+    $r2_true_seq=substr($r2_2,0,$valid_read_len);
+    $r2_true_qua=substr($r2_4,0,$valid_read_len);
+#    if (  $r2_length < 180 ) {
+#        $r2_true_seq=substr($r2_2,0,100);
+#        $r2_true_qua=substr($r2_4,0,100);
+#    } else {
+#        $r2_true_seq=$r2_2;
+#        $r2_true_qua=$r2_4;
+#    }
     my $str;
     if($n5!=0){
         $new_barcode{"0_0_0"}=0;
